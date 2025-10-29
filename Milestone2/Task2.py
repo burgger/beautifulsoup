@@ -1,23 +1,17 @@
-import os
+# use SoupStrainer refactor M1/T1: print all <a>
 import sys
 import time
-
-import psutil
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, SoupStrainer
 
 
-def get_memory_usage():
-    process = psutil.Process(os.getpid())
-    return process.memory_info().rss / (1024 * 1024)
-
-
-def prettify_print(input_path):
-    base_mem_use = get_memory_usage()
+def prettify_print_with_strainer(input_path):
     start_time = time.time()
+    # new strainer
+    strainer = SoupStrainer("a")
     with open(input_path, "rb") as f:
         content = f.read()
-    soup = BeautifulSoup(content, "xml")
-    mem_use = get_memory_usage()
+    # constraint
+    soup = BeautifulSoup(content, "xml", parse_only=strainer)
     end_time = time.time()
     prettify_time = end_time - start_time
     hyperlinks = soup.find_all('a')
@@ -27,11 +21,9 @@ def prettify_print(input_path):
         print(f"{i + 1}. Href: {href}, Text: {text}")
     print("-" * 40)
     print(f'prettify time={prettify_time * 1000:.4f}ms')
-    print(f'baseline mem usage={base_mem_use:.4f}MB')
-    print(f'final mem usage={mem_use:.4f}MB')
     print("-" * 40)
 
 
 if __name__ == "__main__":
     input_file = sys.argv[1]
-    prettify_print(input_file)
+    prettify_print_with_strainer(input_file)

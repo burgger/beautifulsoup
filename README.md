@@ -1,3 +1,7 @@
+# Milestone1
+
+---
+
 ## Task1
 ```pip install beautifulsoup4```
 
@@ -120,4 +124,27 @@ baseline mem usage=20.1562MB
 final mem usage=56.6875MB
 final time use=339.57ms
 ----------------------------------------
+```
+
+# Milestone2 
+
+---
+
+## Task2
+```commandline
+python Milestone2/Task2.py [path to the html/xml file] 
+```
+In Task2 we add a SoupStrainer When working on a more than 300MB html
+Milestone1 Task2 cost 109s and Milestone2 Task2 cost only 32s. **About 3times quicker** See in the Commandline output
+
+```commandline
+(.venv) bohuang@Bos-MacBook-Air Milestone % python Milestone2/Task2.py HTMLfiles/huge_wikidatawiki.xml
+----------------------------------------
+prettify time=32108.8481ms
+----------------------------------------
+(.venv) bohuang@Bos-MacBook-Air Milestone % python Milestone1/Task2.py HTMLfiles/huge_wikidatawiki.xml
+----------------------------------------
+prettify time=131835.1839ms
+baseline mem usage=20.0625MB
+final mem usage=1454.7812MB
 ```
