@@ -1,4 +1,4 @@
-# use SoupStrainer refactor M1/T1: print all <a>
+# use SoupStrainer refactor M1/T2: print all <a>
 import sys
 import time
 from bs4 import BeautifulSoup, SoupStrainer

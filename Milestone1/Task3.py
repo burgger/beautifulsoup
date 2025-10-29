@@ -9,6 +9,7 @@ def get_memory_usage():
     process = psutil.Process(os.getpid())
     return process.memory_info().rss / (1024 * 1024)
 
+
 def find_tags_print(input_path):
     base_mem_use = get_memory_usage()
     start_time = time.time()
@@ -17,7 +18,7 @@ def find_tags_print(input_path):
     soup = BeautifulSoup(content, "xml")
     mem_use = get_memory_usage()
     prettify_time = time.time() - start_time
-    all_tags=soup.find_all(True)
+    all_tags = soup.find_all(True)
     for tags in all_tags:
         print(tags)
     end_time = time.time()
@@ -28,6 +29,7 @@ def find_tags_print(input_path):
     print(f'final mem usage={mem_use:.4f}MB')
     print(f'final time use={final_time * 1000:.2f}ms')
     print("-" * 40)
+
 
 if __name__ == "__main__":
     input_file = sys.argv[1]
