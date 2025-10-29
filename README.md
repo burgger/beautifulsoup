@@ -172,7 +172,7 @@ final time use=333763.99ms
 run`python Milestone2/Task4.py HTMLfiles/huge_wikidatawiki.xml`
 
 Performance compare to Milestone1
-```commandline
+```
 Milestone1
 prettify time=125713.7599ms
 final time use=149368.52ms
@@ -183,3 +183,33 @@ final time use=43310.53ms
 ```
 
 ## Part II
+All func we used in Milestone1 and Milestone2:
+1.  **BeautifulSoup()**
+    * File Path:`beautifulsoup/bs4/__init__.py`
+    * Lines: 133~1144
+2. **prettify()**
+    * File Path:`beautifulsoup/bs4/element.py`
+    * Lines: 2601~2618
+3. **find_all()**
+    * File Path:`beautifulsoup/bs4/element.py`
+    * Lines: 2715~2746
+4. **find()**
+    * File Path:`beautifulsoup/bs4/element.py`
+    * Lines: 2684~2712
+5.  **find_parent()**
+    * File Path:`beautifulsoup/bs4/element.py`
+    * Lines: 992~1019
+6. **.name** elements of soup
+    * File Path:`beautifulsoup/bs4/element.py`
+    * Lines: 1817
+7. **new_tag()**
+    * File Path:`beautifulsoup/bs4/__init__.py`
+    * Lines: 682~731
+8. **insert_before()**
+    * File Path:`beautifulsoup/bs4/__init__.py`
+    * Lines: 772~779
+9. **SoupStrainer()**
+    * File Path:`beautifulsoup/bs4/filter.py`
+    * Lines: 313~683
+
+## Part III
