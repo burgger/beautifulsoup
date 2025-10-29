@@ -129,8 +129,10 @@ final time use=339.57ms
 # Milestone2 
 
 ---
-
-## Task2
+## Part I
+In this part, we use SoupStrainer to refactor codes in Milestone1, to simplify the test
+we only use the 343MB HTML file for test.
+### Task2
 ```commandline
 python Milestone2/Task2.py [path to the html/xml file] 
 ```
@@ -149,7 +151,7 @@ baseline mem usage=20.0625MB
 final mem usage=1454.7812MB
 ```
 
-## Task3
+### Task3
 run```python Milestone2/Task3.py HTMLfiles/huge_wikidatawiki.xml```
 In Milestone2/task3 comparing with Milestone1/task3, because all tags have been parsed,SoupStrainer
 only ignored the pure text in the html file. So the refactor doesn't show it's much higher performance.
@@ -164,3 +166,20 @@ Milestone2: with SoupStrainer
 prettify time use=110675.41ms
 final time use=333763.99ms
 ```
+
+
+### Task4
+run`python Milestone2/Task4.py HTMLfiles/huge_wikidatawiki.xml`
+
+Performance compare to Milestone1
+```commandline
+Milestone1
+prettify time=125713.7599ms
+final time use=149368.52ms
+
+Milestone2
+prettify time=38476.07ms
+final time use=43310.53ms
+```
+
+## Part II
