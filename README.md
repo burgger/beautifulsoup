@@ -1,1 +1,1 @@
-# Read readme in beautiful/apps
+# Read readme in beautifulsoup/apps
