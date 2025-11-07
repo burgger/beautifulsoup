@@ -54,8 +54,6 @@ from collections import Counter
 import sys
 import warnings
 
-from bs4.builder._htmlparser import HTMLParserTreeBuilder
-
 # The very first thing we do is give a useful error if someone is
 # running this code under Python 2.
 if sys.version_info.major < 3:
@@ -63,11 +61,11 @@ if sys.version_info.major < 3:
         "You are trying to use a Python 3-specific version of Beautiful Soup under Python 2. This will not work. The final version of Beautiful Soup to support Python 2 was 4.9.3."
     )
 
-from bs4.builder import (
+from .builder import (
     builder_registry,
-    TreeBuilder
-
+    TreeBuilder,
 )
+from .builder._htmlparser import HTMLParserTreeBuilder
 from .dammit import UnicodeDammit
 from .css import CSS
 from ._deprecation import (
@@ -130,7 +128,6 @@ from bs4._warnings import (
     UnusualUsageWarning,
     XMLParsedAsHTMLWarning,
 )
-from ..bs4 import SoupReplacer
 
 
 class BeautifulSoup(Tag):
@@ -270,7 +267,6 @@ class BeautifulSoup(Tag):
          TreeBuilder by passing in arguments, not just by saying which
          one to use.
         """
-        replacer = kwargs.pop("replacer", None) if "replacer" in kwargs else None
         if "convertEntities" in kwargs:
             del kwargs["convertEntities"]
             warnings.warn(
@@ -311,6 +307,15 @@ class BeautifulSoup(Tag):
                 "features='lxml' for HTML and features='lxml-xml' for "
                 "XML."
             )
+        # our new replacer
+        self.replacer = None
+        if "replacer" in kwargs:
+            use_replacer = kwargs.pop("replacer")
+            from .filter import SoupReplacer
+            if isinstance(use_replacer, SoupReplacer):
+                self.replacer = use_replacer
+            else:
+                warnings.warn("Your Replacer is not in SoupReplacer")
 
         def deprecated_argument(old_name: str, new_name: str) -> Optional[Any]:
             if old_name in kwargs:
@@ -439,7 +444,6 @@ class BeautifulSoup(Tag):
         self.known_xml = self.is_xml
         self._namespaces = dict()
         self.parse_only = parse_only
-        self.replacer = replacer
 
         if hasattr(markup, "read"):  # It's a file-type object.
             markup = markup.read()
@@ -1022,8 +1026,7 @@ class BeautifulSoup(Tag):
         """
         # print("Start tag %s: %s" % (name, attrs))
         self.endData()
-        if getattr(self, "replacer", None) is not None and name is not None:
-            name = self.replacer.replace_tag_name(name)
+
         if (
                 self.parse_only
                 and len(self.tagStack) <= 1

@@ -1645,6 +1645,10 @@ class Tag(PageElement):
             self.parser_class = parser.__class__
         if name is None:
             raise ValueError("No value provided for new tag's name.")
+        soup = getattr(self, "soup", None) or getattr(builder, "soup", None)
+        replacer = getattr(soup, "replacer", None) if soup is not None else None
+        if replacer is not None and name is not None:
+            name = replacer.maybe_replace(name)
         self.name = name
         self.namespace = namespace
         self._namespaces = namespaces or {}

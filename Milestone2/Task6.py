@@ -1,11 +1,7 @@
-
 import sys, os
-
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT)
-from beautifulsoup.bs4 import BeautifulSoup
-from beautifulsoup.bs4.SoupReplacer import SoupReplacer
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "beautifulsoup")))
+from bs4 import BeautifulSoup
+from bs4.filter import SoupReplacer
 
 def main():
     in_path, out_path = sys.argv[1], sys.argv[2]
@@ -16,9 +12,10 @@ def main():
         data = f.read()
 
     replacer = SoupReplacer(og, alt)
-    soup = BeautifulSoup(data, "xml", replacer=replacer)
+    soup = BeautifulSoup(data, "html.parser", replacer=replacer)
     with open(out_path, "w", encoding="utf-8") as out:
         out.write(soup.prettify())
+
 
 if __name__ == "__main__":
     main()

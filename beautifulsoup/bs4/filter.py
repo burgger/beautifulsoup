@@ -135,7 +135,7 @@ class ElementFilter(object):
         return None
 
     def find_all(
-        self, generator: Iterator[PageElement], limit: Optional[int] = None
+            self, generator: Iterator[PageElement], limit: Optional[int] = None
     ) -> _QueryResults:
         """A lower-level equivalent of :py:meth:`Tag.find_all`.
 
@@ -156,7 +156,7 @@ class ElementFilter(object):
         return results
 
     def allow_tag_creation(
-        self, nsprefix: Optional[str], name: str, attrs: Optional[_RawAttributeValues]
+            self, nsprefix: Optional[str], name: str, attrs: Optional[_RawAttributeValues]
     ) -> bool:
         """Based on the name and attributes of a tag, see whether this
         `ElementFilter` will allow a `Tag` object to even be created.
@@ -190,16 +190,17 @@ class MatchRule(object):
     string: Optional[str]
     pattern: Optional[_RegularExpressionProtocol]
     present: Optional[bool]
+
     # TODO-TYPING: All MatchRule objects also have an attribute
     # ``function``, but the type of the function depends on the
     # subclass.
 
     def __init__(
-        self,
-        string: Optional[Union[str, bytes]] = None,
-        pattern: Optional[_RegularExpressionProtocol] = None,
-        function: Optional[Callable] = None,
-        present: Optional[bool] = None,
+            self,
+            string: Optional[Union[str, bytes]] = None,
+            pattern: Optional[_RegularExpressionProtocol] = None,
+            function: Optional[Callable] = None,
+            present: Optional[bool] = None,
     ):
         if isinstance(string, bytes):
             string = string.decode("utf8")
@@ -272,11 +273,11 @@ class MatchRule(object):
 
     def __eq__(self, other: Any) -> bool:
         return (
-            isinstance(other, MatchRule)
-            and self.string == other.string
-            and self.pattern == other.pattern
-            and self.function == other.function
-            and self.present == other.present
+                isinstance(other, MatchRule)
+                and self.string == other.string
+                and self.pattern == other.pattern
+                and self.function == other.function
+                and self.present == other.present
         )
 
 
@@ -308,6 +309,18 @@ class StringMatchRule(MatchRule):
     """A MatchRule implementing the rules for matches against a NavigableString."""
 
     function: Optional[_StringMatchFunction]
+
+
+# our SoupReplacer
+class SoupReplacer:
+    def __init__(self, og_tag, alt_tag):
+        if not og_tag or not alt_tag:
+            raise ValueError("need og_tag and alt_tag")
+        self.og = str(og_tag)
+        self.alt = str(alt_tag)
+
+    def maybe_replace(self, tag_name: str) -> str:
+        return self.alt if tag_name == self.og else tag_name
 
 
 class SoupStrainer(ElementFilter):
@@ -343,11 +356,11 @@ class SoupStrainer(ElementFilter):
     string_rules: List[StringMatchRule]
 
     def __init__(
-        self,
-        name: Optional[_StrainableElement] = None,
-        attrs: Dict[str, _StrainableAttribute] = {},
-        string: Optional[_StrainableString] = None,
-        **kwargs: _StrainableAttribute,
+            self,
+            name: Optional[_StrainableElement] = None,
+            attrs: Dict[str, _StrainableAttribute] = {},
+            string: Optional[_StrainableString] = None,
+            **kwargs: _StrainableAttribute,
     ):
         if string is None and "text" in kwargs:
             string = cast(Optional[_StrainableString], kwargs.pop("text"))
@@ -432,9 +445,9 @@ class SoupStrainer(ElementFilter):
 
     @classmethod
     def _make_match_rules(
-        cls,
-        obj: Optional[Union[_StrainableElement, _StrainableAttribute]],
-        rule_class: Type[MatchRule],
+            cls,
+            obj: Optional[Union[_StrainableElement, _StrainableAttribute]],
+            rule_class: Type[MatchRule],
     ) -> Iterator[MatchRule]:
         """Convert a vaguely-specific 'object' into one or more well-defined
         `MatchRule` objects.
@@ -495,10 +508,10 @@ class SoupStrainer(ElementFilter):
         # searching for a tag with one specific name, and we're
         # looking at a tag with a different name.
         if (
-            not tag.prefix
-            and len(self.name_rules) == 1
-            and self.name_rules[0].string is not None
-            and tag.name != self.name_rules[0].string
+                not tag.prefix
+                and len(self.name_rules) == 1
+                and self.name_rules[0].string is not None
+                and tag.name != self.name_rules[0].string
         ):
             return False
 
@@ -516,7 +529,7 @@ class SoupStrainer(ElementFilter):
                 # )
                 # print(f"Testing <{tag.name} {attrs}>{tag.string}</{tag.name}> against {rule}")
                 if rule.matches_tag(tag) or (
-                    prefixed_name is not None and rule.matches_string(prefixed_name)
+                        prefixed_name is not None and rule.matches_string(prefixed_name)
                 ):
                     name_matches = True
                     break
@@ -543,9 +556,9 @@ class SoupStrainer(ElementFilter):
         return True
 
     def _attribute_match(
-        self,
-        attr_value: Optional[_AttributeValue],
-        rules: Iterable[AttributeValueMatchRule],
+            self,
+            attr_value: Optional[_AttributeValue],
+            rules: Iterable[AttributeValueMatchRule],
     ) -> bool:
         attr_values: Sequence[Optional[str]]
         if isinstance(attr_value, list):
@@ -578,7 +591,7 @@ class SoupStrainer(ElementFilter):
         return this_attr_match
 
     def allow_tag_creation(
-        self, nsprefix: Optional[str], name: str, attrs: Optional[_RawAttributeValues]
+            self, nsprefix: Optional[str], name: str, attrs: Optional[_RawAttributeValues]
     ) -> bool:
         """Based on the name and attributes of a tag, see whether this
         `SoupStrainer` will allow a `Tag` object to even be created.

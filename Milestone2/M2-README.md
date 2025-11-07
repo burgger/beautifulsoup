@@ -85,5 +85,16 @@ All func we used in Milestone1 and Milestone2:
     * Lines: 313~683
 
 ## Part III
-```python Milestone2/Task6.py [input path] [output path]```
+1. add class ``SoupReplacer`` in ``filter.py``
+2. modify ``def __init__`` in ``__init__.py``
+3. modify ``__init__`` in ``elements.py`` to return the tag been replaced
+4. add test1 and test2
+5. make sure to use venv in beautifulsoup```cd beautifulsoup``` ```source venv/bin/activate```
+
+```commandline
+cd src
+```
+```commandline
+python Milestone2/Task6.py [input path] [output path]
+```
 

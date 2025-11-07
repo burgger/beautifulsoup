@@ -21,8 +21,6 @@ from typing import (
 )
 import warnings
 import sys
-
-import bs4
 from bs4.element import (
     AttributeDict,
     AttributeValueList,
