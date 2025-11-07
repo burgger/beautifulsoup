@@ -311,16 +311,88 @@ class StringMatchRule(MatchRule):
     function: Optional[_StringMatchFunction]
 
 
-# our SoupReplacer
-class SoupReplacer:
-    def __init__(self, og_tag, alt_tag):
-        if not og_tag or not alt_tag:
-            raise ValueError("need og_tag and alt_tag")
-        self.og = str(og_tag)
-        self.alt = str(alt_tag)
+# our SoupReplacer M2 version
+# class SoupReplacer:
+#     def __init__(self, og_tag, alt_tag):
+#         if not og_tag or not alt_tag:
+#             raise ValueError("need og_tag and alt_tag")
+#         self.og = str(og_tag)
+#         self.alt = str(alt_tag)
+#
+#     def maybe_replace(self, tag_name: str) -> str:
+# #         return self.alt if tag_name == self.og else tag_name
 
-    def maybe_replace(self, tag_name: str) -> str:
-        return self.alt if tag_name == self.og else tag_name
+# our SoupReplacer V2(Milestone3 version)
+class SoupReplacer:
+    def __init__(self, *args, name_xformer=None, attrs_xformer=None, xformer=None):
+        og, alt = None, None
+        self._V1 = None
+        self._name = None
+        self._attrs = None
+        self._xf = None
+        # Mode1 Milestone2 original func:V1
+        if len(args) == 2 and name_xformer is None and attrs_xformer is None and xformer is None:
+            og, alt = args
+            if not og or not alt:
+                raise ValueError("og_tag and alt_tag can't be empty string")
+            self._V1 = (str(og), str(alt))
+
+        # Mode2 Milestone3 new features
+        else:
+            if len(args) != 0:
+                warnings.warn("Mode1: Use 2 args to define og_tag and alt_tag"
+                              "Mode2:Use keyword-only arguments: name_xformer=, attrs_xformer=, xformer=.")
+            if name_xformer is not None and callable(name_xformer):
+                self._name = name_xformer
+            if attrs_xformer is not None and callable(attrs_xformer):
+                self._attrs = attrs_xformer
+            if xformer is not None and callable(xformer):
+                self._xf = xformer
+
+        if self._V1 is None and self._name is None and self._attrs is None and self._xf is None:
+            warnings.warn("SoupReplacer should have active arguments")
+
+    def apply(self, tag):
+        # 1 V1
+        try:
+            if self._V1 is not None:
+                og, alt = self._V1
+                if tag.name == og:
+                    tag.name = alt
+        except Exception as e:
+            warnings.warn(f"SoupReplacer(V1): {e}")
+        # 2 name xf
+        try:
+            if self._name is not None:
+                new_name = self._name(tag)
+                if new_name is not None:
+                    tag.name = str(new_name)
+        except Exception as e:
+            warnings.warn(f"SoupReplacer(name_xformer): {e}")
+        # 3) attrs_xformer
+        try:
+            if self._attrs is not None:
+                new_attrs = self._attrs(tag)
+                if new_attrs is not None:
+                    if isinstance(new_attrs, dict):
+                        tag.attrs = dict(new_attrs)
+                    else:
+                        warnings.warn("SoupReplacer(attrs_xformer): returned value is not a Mapping; ignored.")
+        except Exception as e:
+            warnings.warn(f"SoupReplacer(attrs_xformer): {e}")
+        # 4) xformer (side-effects)
+        try:
+            if self._xf is not None:
+                self._xf(tag)
+        except Exception as e:
+            warnings.warn(f"SoupReplacer(xformer): {e}")
+
+    def maybe_replace(self, name: str) -> str:
+        """Kept for backward compatibility with M2 code paths."""
+        if self._V1 is None:
+            return name
+        og, alt = self._V1
+        return alt if name == og else name
 
 
 class SoupStrainer(ElementFilter):

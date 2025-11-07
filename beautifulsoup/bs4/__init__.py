@@ -307,15 +307,30 @@ class BeautifulSoup(Tag):
                 "features='lxml' for HTML and features='lxml-xml' for "
                 "XML."
             )
-        # our new replacer
+        # # our new replacer
+        # self.replacer = None
+        # if "replacer" in kwargs:
+        #     use_replacer = kwargs.pop("replacer")
+        #     from .filter import SoupReplacer
+        #     if isinstance(use_replacer, SoupReplacer):
+        #         self.replacer = use_replacer
+        #     else:
+        #         warnings.warn("Your Replacer is not in SoupReplacer")
+
+        # new replacer V2
         self.replacer = None
         if "replacer" in kwargs:
             use_replacer = kwargs.pop("replacer")
-            from .filter import SoupReplacer
-            if isinstance(use_replacer, SoupReplacer):
+            is_valid = (
+                    hasattr(use_replacer, "apply") or
+                    hasattr(use_replacer, "maybe_replace")
+            )
+            if is_valid:
                 self.replacer = use_replacer
             else:
-                warnings.warn("Your Replacer is not in SoupReplacer")
+                warnings.warn(
+                    "BeautifulSoup received 'replacer' that is not defined"
+                )
 
         def deprecated_argument(old_name: str, new_name: str) -> Optional[Any]:
             if old_name in kwargs:

@@ -1645,10 +1645,12 @@ class Tag(PageElement):
             self.parser_class = parser.__class__
         if name is None:
             raise ValueError("No value provided for new tag's name.")
-        soup = getattr(self, "soup", None) or getattr(builder, "soup", None)
-        replacer = getattr(soup, "replacer", None) if soup is not None else None
-        if replacer is not None and name is not None:
-            name = replacer.maybe_replace(name)
+
+        # our replacer v1
+        # soup = getattr(self, "soup", None) or getattr(builder, "soup", None)
+        # replacer = getattr(soup, "replacer", None) if soup is not None else None
+        # if replacer is not None and name is not None:
+        #     name = replacer.maybe_replace(name)
         self.name = name
         self.namespace = namespace
         self._namespaces = namespaces or {}
@@ -1691,6 +1693,23 @@ class Tag(PageElement):
                     if isinstance(v, list):
                         v = v.__class__(v)
                     self.attrs[k] = v
+        # our replacer V2
+        try:
+            soup = (getattr(self, "soup", None) or
+                    getattr(builder, "soup", None) or
+                    getattr(parser, "soup", None))
+            replacer = getattr(soup, "replacer", None) if soup is not None else None
+
+            if replacer is not None:
+                if hasattr(replacer, "apply") and callable(getattr(replacer, "apply")):
+                    replacer.apply(self)
+                elif hasattr(replacer, "maybe_replace") and callable(getattr(replacer, "maybe_replace")):
+                    new_name = replacer.maybe_replace(self.name)
+                    if new_name is not None:
+                        self.name = new_name
+        except Exception as e:
+            import warnings
+            warnings.warn(f"SoupReplacer(apply) failed: {e}")
 
         # If possible, determine ahead of time whether this tag is an
         # XML tag.
