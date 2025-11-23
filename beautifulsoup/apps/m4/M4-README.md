@@ -1,36 +1,23 @@
 # Milestone-4
 implement a ```___iter___``` in ```__init__.py``` for BeautifulSoup.
 
-Soup is a Tag,Tag(name,attrs,contents)  #contents is a list stores child nodes,
-child could be Tag node, Text Node, Comment Node, Document node.
-
-Tag is a PageElement, pointer in PageElement:
+Soup is a Tag, we use descendants to implement iter
+```python
+    def descendants(self) -> Iterator[PageElement]:
+        """Iterate over all children of this `Tag` in a
+        breadth-first sequence.
+        """
+        if not len(self.contents):
+            return
+        # _last_descendant() can't return None here because
+        # accept_self is True. Worst case, last_descendant will end up
+        # as self.
+        last_descendant = cast(PageElement, self._last_descendant(accept_self=True))
+        stopNode = last_descendant.next_element
+        current: _AtMostOneElement = self.contents[0]
+        while current is not stopNode and current is not None:
+            successor = current.next_element
+            yield current
+            current = successor
 ```
-self.parent              # Tag or soup
-self.contents            # only tag have
-self.next_sibling        # next sibling of same parent
-self.previous_sibling    # previous sibling
-self.next_element        # next element of this tree
-self.previous_element    # previous_element of this tree
-```
-
-For this html
-``` html
-<div>
-  hello <b>world</b>!
-</div>
-```
-The structure will be:
-```
-Tag
-    L___ NavigableString("hello ")
-    L___ Tag(b)
-        L___NavigableString("world")
-    L___ NavigableString("!")
-
-```
-
-Tag has a default iterator to iterate the children, but we want soup iterator to iter 
-all nodes and all children of a node--> next_element
-
-implement a ```___iter___``` in ```__init__.py``` for BeautifulSoup(Tag).
+implement in line 516 ```__init__.py```

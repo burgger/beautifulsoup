@@ -513,6 +513,11 @@ class BeautifulSoup(Tag):
         self.markup = None
         self.builder.soup = None
 
+    # add a new iterator
+    def __iter__(self):
+        for node in self.descendants:
+            yield node
+
     def copy_self(self) -> "BeautifulSoup":
         """Create a new BeautifulSoup object with the same TreeBuilder,
         but not associated with any markup.
