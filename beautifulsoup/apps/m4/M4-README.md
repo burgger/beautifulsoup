@@ -21,3 +21,8 @@ Soup is a Tag, we use descendants to implement iter
             current = successor
 ```
 implement in line 516 ```__init__.py```
+
+```commandline
+cd bs4\tests
+pytest  test_iterator.py
+```
